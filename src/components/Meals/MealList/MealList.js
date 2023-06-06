@@ -1,3 +1,4 @@
+import Card from '../../UI/Card/Card';
 import styles from './MealList.module.css';
 
 const DUMMY_MEALS = [
@@ -32,7 +33,9 @@ const MealList = () => {
 
 	return (
 		<section className={styles.meals}>
-			<ul>{mealList}</ul>
+			<Card>
+				<ul>{mealList}</ul>
+			</Card>
 		</section>
 	);
 };
