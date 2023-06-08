@@ -52,3 +52,4 @@ const Cart = ({ onHideCartHandler }) => {
 };
 
 export default Cart;
+ 
