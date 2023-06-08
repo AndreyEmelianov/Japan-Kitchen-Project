@@ -8,6 +8,8 @@ import styles from './Cart.module.css';
 
 const Cart = ({ onHideCartHandler }) => {
 	const [isSubmitOrderAvailable, setIsSubmitOrderAvailable] = useState(false);
+	const [isDataSubmitting, setIsDataSubmitting] = useState(false);
+	const [wasDataSendingSuccessful, setWasDataSendingSuccessful] = useState(false);
 
 	const cartContext = useContext(CartContext);
 
@@ -26,14 +28,20 @@ const Cart = ({ onHideCartHandler }) => {
 		setIsSubmitOrderAvailable(true);
 	};
 
-	const submitOrderHandler = (userData) => {
-		fetch('https://japan-kitchen-default-rtdb.firebaseio.com/orders.json', {
+	const submitOrderHandler = async (userData) => {
+		setIsDataSubmitting(true);
+
+		await fetch('https://japan-kitchen-default-rtdb.firebaseio.com/orders.json', {
 			method: 'POST',
 			body: JSON.stringify({
 				user: userData,
 				orderedMeals: cartContext.items,
 			}),
 		});
+
+		setIsDataSubmitting(false);
+		setWasDataSendingSuccessful(true);
+		cartContext.clearCart();
 	};
 
 	const cartItems = (
@@ -64,8 +72,8 @@ const Cart = ({ onHideCartHandler }) => {
 		</div>
 	);
 
-	return (
-		<Modal onHideCartHandler={onHideCartHandler}>
+	const cartModalContent = (
+		<>
 			{cartItems}
 			<div className={styles.total}>
 				<span>Итого</span>
@@ -78,6 +86,27 @@ const Cart = ({ onHideCartHandler }) => {
 				/>
 			)}
 			{!isSubmitOrderAvailable && modalButtons}
+		</>
+	);
+
+	const dataSubmittingCartModalContent = <p>Отправка данных заказа...</p>;
+
+	const dataWasSubmitedCartModalContent = (
+		<>
+			<p>Ваш заказ успешно отправлен</p>
+			<div className={styles.actions}>
+				<button className={styles['button--alt']} onClick={onHideCartHandler}>
+					Закрыть
+				</button>
+			</div>
+		</>
+	);
+
+	return (
+		<Modal onHideCartHandler={onHideCartHandler}>
+			{!isDataSubmitting && !wasDataSendingSuccessful && cartModalContent}
+			{isDataSubmitting && dataSubmittingCartModalContent}
+			{wasDataSendingSuccessful && dataWasSubmitedCartModalContent}
 		</Modal>
 	);
 };
