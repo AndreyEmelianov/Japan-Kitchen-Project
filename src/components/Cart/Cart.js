@@ -26,6 +26,16 @@ const Cart = ({ onHideCartHandler }) => {
 		setIsSubmitOrderAvailable(true);
 	};
 
+	const submitOrderHandler = (userData) => {
+		fetch('https://japan-kitchen-default-rtdb.firebaseio.com/orders.json', {
+			method: 'POST',
+			body: JSON.stringify({
+				user: userData,
+				orderedMeals: cartContext.items,
+			}),
+		});
+	};
+
 	const cartItems = (
 		<ul className={styles['cart-items']}>
 			{cartContext.items.map((item) => (
@@ -61,7 +71,12 @@ const Cart = ({ onHideCartHandler }) => {
 				<span>Итого</span>
 				<span>{totalAmount}</span>
 			</div>
-			{isSubmitOrderAvailable && <SubmitOrder onHideCartHandler={onHideCartHandler} />}
+			{isSubmitOrderAvailable && (
+				<SubmitOrder
+					onHideCartHandler={onHideCartHandler}
+					submitOrderHandler={submitOrderHandler}
+				/>
+			)}
 			{!isSubmitOrderAvailable && modalButtons}
 		</Modal>
 	);

@@ -4,7 +4,7 @@ import styles from './SubmitOrder.module.css';
 
 const isInputValid = (inputValue) => inputValue.trim() !== '';
 
-const SubmitOrder = ({ onHideCartHandler }) => {
+const SubmitOrder = ({ onHideCartHandler, submitOrderHandler }) => {
 	const [formValidity, setFormValidity] = useState({
 		name: true,
 		city: true,
@@ -37,6 +37,12 @@ const SubmitOrder = ({ onHideCartHandler }) => {
 		if (!isFormValid) {
 			return;
 		}
+
+		submitOrderHandler({
+			name: enteredName,
+			city: enteredCity,
+			address: enteredAddress,
+		});
 	};
 
 	const nameInputClasses = `${styles.control} ${formValidity.name ? '' : styles.invalid}`;
